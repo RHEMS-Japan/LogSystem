@@ -1,6 +1,5 @@
-LogSystem
+RHEMS LogSystem
 =========
 
-![alt tag](https://github.com/RHEMS-Japan/LogSystem/blob/master/img/rhems_log.jpg)
+![alt tag](https://github.com/RHEMS-Japan/LogSystem/blob/master/img/rhems_log.jpg?raw=true)
 
-A good solution for logging. 
