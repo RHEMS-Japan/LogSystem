@@ -12,7 +12,7 @@ logの流れ
 
 1. vpcのインスタンスからrsyslogでLOG SENDER01/02に送る
 2. LOG SENDER プロセスが1メッセージづつRabbitMQのサーバへ送信します
-3. 受け取ったメッセージはSpoolされます
+3. 受け取ったメッセージはRabbitMQサーバにSpoolされます
 4. Log Serverでは受け取ったqueueをファイルに出力したり直接DBへ流しこむこともできます
 5. 6. 7. 古いlogはS3,Glacierに移動しコストを抑えます。
 
