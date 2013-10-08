@@ -1,13 +1,15 @@
 RHEMS LogSystem
 =========
-RHEMS LogSystemでは基本インフラ向けのlogを収集する為に開発をしました。
-サーバでsyslogの設定をするだけでクライアントの設定は完了です。
+
+  RHEMS LogSystemでは基本インフラ向けのlogを収集する為に開発をしました。
+  サーバでsyslogの設定をするだけでクライアントの設定は完了です。
 
 ![alt tag](https://github.com/RHEMS-Japan/LogSystem/blob/master/img/rhems_log.jpg?raw=true)
 
 
 logの流れ
 ====================
+
 1. vpcのインスタンスからrsyslogでLOG SENDER01/02に送る
 2. LOG SENDER プロセスが1メッセージづつRabbitMQのサーバへ送信します
 3. 受け取ったメッセージはSpoolされます
@@ -16,6 +18,7 @@ logの流れ
 
 特徴
 ====================
+
 ・syslogの設定をするだけでlogの収集ができます。(switch/loadbalancer,etcでも使えます)
 ・localのサーバにはlogを吐かないのでディスクの調整をしなくてよくなります。
 ・awsのインスタンスが消えても大事なlogは保持できます。
