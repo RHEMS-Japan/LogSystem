@@ -1,0 +1,17 @@
+## rabbitmqadmin declare queue name=<%= node.rsyslog_infra.routing_key %> durable=false
+<%= node.rsyslog_infra.facility %>.*    action(type="omrabbitmq"
+             host="<%= node.rsyslog_infra.host %>"
+             virtual_host="<%= node.rsyslog_infra.virtual_host %>"
+             user="<%= node.rsyslog_infra.user %>"
+             password="<%= node.rsyslog_infra.password %>"
+             exchange=""
+             template="<%= node.rsyslog_infra.template %>"
+             routing_key="<%= node.rsyslog_infra.routing_key %>"
+             queue.timeoutenqueue="<%= node.rsyslog_infra.timeoutenqueue %>"
+             queue.highwatermark="<%= node.rsyslog_infra.highwatermark %>"
+             queue.lowwatermark="<%= node.rsyslog_infra.lowwatermark %>"
+             queue.discardmark="<%= node.rsyslog_infra.discardmark %>"
+             queue.maxdiskspace="<%= node.rsyslog_infra.maxdiskspace %>"
+             queue.size="<%= node.rsyslog_infra.queuesize %>"
+             queue.saveonshutdown="<%= node.rsyslog_infra.saveonshutdown %>"
+             action.resumeretrycount="<%= node.rsyslog_infra.resumeretrycount %>")

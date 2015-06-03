@@ -1,0 +1,7 @@
+#!/bin/sh
+## made by rayman@rhems-japan.co.jp
+PATH=<%= node.rhems_logsystem.path %>bin:/usr/sbin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/sbin
+export PATH
+
+rabbitmqadmin declare queue name=infra
+exec infra

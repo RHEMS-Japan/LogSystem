@@ -1,0 +1,22 @@
+[base]
+mq_server=<%= node.rhems_logsystem.app.mqserver %>
+script_log=<%= node.rhems_logsystem.app.script_log %>
+logbase=<%= node.rhems_logsystem.app.logbase %>
+queuename=<%= node.rhems_logsystem.app.queuename %>
+chunkw=''
+
+##### LOG SETTINGS #####
+#[ERROR_APACHE]
+#opt=log
+#dir=apache
+#outputfile=error.log
+#
+#[APACHE]
+#opt=log
+#dir=apache
+#outputfile=access.log
+#
+#[LOCKCDN-PURGE]
+#opt=merge
+#dir=lockcdn/purge
+#outputfile=purge.log
