@@ -26,7 +26,8 @@ RUN /usr/lib/rabbitmq/bin/rabbitmq-plugins enable rabbitmq_management
 # 15672 rabbitmq-server - for management plugin
 # 4369 epmd - for clustering
 # 25672 rabbitmq-server - for clustering
-EXPOSE 5672 15672 4369 25672
+# 514 syslog
+EXPOSE 5672 15672 4369 25672 514 514/udp
 
 #
 # entrypoint/cmd for container

@@ -26,4 +26,6 @@ logの流れ
     ・サーバが追加される度にconfの設定の必要がない
 
 
-
+Dockerで起動
+====================
+docker run -d -p 5672:5672 -p 15672:15672 -p 514:514 -p 514:514/udp --privileged <image id> /sbin/init

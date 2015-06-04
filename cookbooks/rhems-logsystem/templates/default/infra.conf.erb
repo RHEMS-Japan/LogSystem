@@ -6,15 +6,15 @@ queuename=<%= node.rhems_logsystem.infra.queuename %>
 chunkw=''
 
 ##### LOG SETTINGS #####
-#[ERROR_APACHE]
-#opt=log
-#dir=apache
-#outputfile=error.log
-#
-#[APACHE]
-#opt=log
-#dir=apache
-#outputfile=access.log
+[ERROR_APACHE]
+opt=log
+dir=apache
+outputfile=error.log
+
+[APACHE]
+opt=log
+dir=apache
+outputfile=access.log
 #
 #[LOCKCDN-PURGE]
 #opt=merge
