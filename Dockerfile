@@ -1,13 +1,10 @@
 FROM           centos:centos6
-#FROM		simeji/amzn
-#FROM		centos:centos7
-#FROM            centos7-systemd
 MAINTAINER 	rayman <rayman@rhems-japan.co.jp>
 # Container Build
 
 ## run base setup
 RUN yum -y update; yum clean all
-RUN yum -y install mlocate telnet tar net-tools rsyslog; yum clean all
+RUN yum -y install mlocate telnet tar net-tools rsyslog java libcurl-devel; yum clean all
 RUN yum -y groupinstall "Development Tools"; yum clean all
 
 ## FOR rubbitmq
@@ -31,7 +28,7 @@ RUN /usr/lib/rabbitmq/bin/rabbitmq-plugins enable rabbitmq_management
 # 4369 epmd - for clustering
 # 25672 rabbitmq-server - for clustering
 # 514 syslog
-EXPOSE 5672 15672 4369 25672 514 514/udp
+EXPOSE 5672 15672 4369 25672 514 514/udp 8080
 
 ### CHEF
 # install

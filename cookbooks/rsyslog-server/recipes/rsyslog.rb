@@ -10,7 +10,7 @@ bash 'make & install rsyslog' do
   code <<-EOF
   tar zxf #{node['rsyslog']['name']}
   cd #{node['rsyslog']['dir']}
-  PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/lib64/pkgconfig::/lib64/pkgconfig \
+  PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:/usr/lib64/pkgconfig:/lib64/pkgconfig \
   ./configure --prefix=#{node['rsyslog']['prefix']} \
   --enable-zlib \
   --enable-kmsg \
@@ -18,7 +18,8 @@ bash 'make & install rsyslog' do
   --enable-libgcrypt \
   --enable-relp \
   --enable-imptcp \
-  --enable-omrabbitmq --enable-imfile
+  --enable-omrabbitmq --enable-imfile \
+  --enable-elasticsearch
   make && make install
   EOF
   not_if  { File.exists?("#{node['rsyslog']['checkfile']}") }
