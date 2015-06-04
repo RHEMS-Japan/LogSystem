@@ -28,4 +28,4 @@ logの流れ
 
 Dockerで起動
 ====================
-docker run -d -p 5672:5672 -p 15672:15672 -p 514:514 -p 514:514/udp --privileged <image id> /sbin/init
+docker run -d -p 5672:5672 -p 15672:15672 -p 514:514 -p 514:514/udp <image id>
