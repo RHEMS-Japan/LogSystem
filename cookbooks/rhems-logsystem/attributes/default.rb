@@ -1,7 +1,13 @@
 default['rhems_logsystem']['url'] = 'http://chef.rhems-japan.net:8080/src/'
 default['rhems_logsystem']['path'] = '/usr/local/rhemslog/'
-default['rhems_logsystem']['easy_install']['bin'] ='/usr/lib64/pypy-2.0.2/bin/easy_install'
-default['rhems_logsystem']['pip']['bin'] ='/usr/lib64/pypy-2.0.2/bin/pip'
+case node[:platform_version]
+when "7.1.1503"
+   default['rhems_logsystem']['easy_install']['bin'] ='/usr/lib64/pypy-2.2.1/bin/easy_install'
+   default['rhems_logsystem']['pip']['bin'] ='/usr/lib64/pypy-2.2.1/bin/pip'
+else
+   default['rhems_logsystem']['easy_install']['bin'] ='/usr/lib64/pypy-2.0.2/bin/easy_install'
+   default['rhems_logsystem']['pip']['bin'] ='/usr/lib64/pypy-2.0.2/bin/pip'
+end
 
 ## appconf
 default['rhems_logsystem']['app']['mqserver'] = '127.0.0.1'

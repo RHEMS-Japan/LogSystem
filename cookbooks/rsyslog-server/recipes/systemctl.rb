@@ -1,14 +1,5 @@
-## create directory
-directory "/var/lib/rsyslog" do
-  owner "root"
-  group "root"
-  recursive true
-  mode 0775
-  action :create
-end
-
 # backup rsyslog_init original
-rsyslog_init = "/etc/init.d/rsyslog"
+rsyslog_init = "/usr/lib/systemd/system/rsyslog.service"
 
 bash 'copy_rsyslog_init_original' do
   code <<-EOC
@@ -18,7 +9,7 @@ bash 'copy_rsyslog_init_original' do
 end
 
 settings = {
-        'exec=/sbin/rsyslogd' => 'exec=/usr/local/rsyslog/sbin/rsyslogd'
+        'exec=/usr/sbin/rsyslogd' => 'exec=/usr/local/rsyslog/sbin/rsyslogd'
 }
 
 settings.each do |k, v|
@@ -32,5 +23,7 @@ end
 
 ## restart rsyslog
 service "rsyslog" do
+   provider Chef::Provider::Service::Systemd
+   supports :status => true, :restart => true, :reload => true
    action [ :enable, :restart ]
 end

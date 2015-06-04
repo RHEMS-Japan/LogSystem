@@ -32,11 +32,16 @@ end
 end
 
 ## svscan
-template "/etc/init/svscan.conf" do
-    source "svscanboot.erb"
-    owner "root"
-    group "root"
-    mode 0644
+case node[:platform_version]
+when "7.1.1503"
+    include_recipe "rhems-logsystem::systemctl"
+else
+    template "/etc/init/svscan.conf" do
+        source "svscanboot.erb"
+        owner "root"
+        group "root"
+        mode 0644
+    end
 end
 
 ## GET FILE
@@ -53,7 +58,6 @@ bash 'setup pypy' do
 	#{node['rhems_logsystem']['easy_install']['bin']} pip
 	#{node['rhems_logsystem']['pip']['bin']} install pika
   EOF
-  not_if  { File.exists?("#{node['rhems_logsystem']['easy_install']['bin']}") }
 end
 
 bash 'setup rhemslog' do
@@ -66,10 +70,11 @@ bash 'setup rhemslog' do
 end
 
 ## GET FILE
-remote_file "#{node['rhems_logsystem']['path']}bin/rhems-logsystem.py" do
-  source "#{node['rhems_logsystem']['url']}rhems-logsystem.py"
-  mode '0755'
-  not_if  { File.exists?("#{node['rhems_logsystem']['path']}bin/rhems-logsystem.py") }
+template "#{node['rhems_logsystem']['path']}bin/rhems-logsystem.py" do
+    source "rhems-logsystem.py.erb"
+    owner "root"
+    group "root"
+    mode "0755"
 end
 
 %w{
@@ -111,8 +116,6 @@ end
 		owner "root"
 		group "root"
 		mode "0755"
-        only_if { File.exists?("#{node['rhems_logsystem']['path']}conf/#{splitprog}.conf") }
-        action :nothing
 	end
 	
 	## start prog

@@ -2,7 +2,7 @@
 default['rsyslog_app']['facility'] = 'local2'
 default['rsyslog_app']['virtual_host'] = '/'
 default['rsyslog_app']['host'] = '127.0.0.1'
-default['rsyslog_app']['user'] = 'guest'
+default['rsyslog_app']['user'] = 'admin'
 default['rsyslog_app']['password'] = 'guest'
 default['rsyslog_app']['template'] = 'RSYSLOG_FileFormat'
 default['rsyslog_app']['routing_key'] = 'app'

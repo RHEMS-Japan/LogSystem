@@ -4,7 +4,7 @@ MAINTAINER 	rayman <rayman@rhems-japan.co.jp>
 
 ## run base setup
 RUN yum -y update; yum clean all
-RUN yum -y install mlocate telnet tar; yum clean all
+RUN yum -y install mlocate telnet tar net-tools; yum clean all
 RUN yum -y groupinstall "Development Tools"; yum clean all
 
 ## FOR rubbitmq
@@ -15,8 +15,8 @@ RUN /usr/lib/rabbitmq/bin/rabbitmq-plugins enable rabbitmq_management
 ## -------- FOR rubbitmq --------
 #
 # add run/set passwd script
-ADD run-rabbitmq-server.sh /run-rabbitmq-server.sh
-RUN chmod 750 ./run-rabbitmq-server.sh
+#ADD run-rabbitmq-server.sh /run-rabbitmq-server.sh
+#RUN chmod 750 ./run-rabbitmq-server.sh
 
 
 # 
@@ -26,13 +26,13 @@ RUN chmod 750 ./run-rabbitmq-server.sh
 # 15672 rabbitmq-server - for management plugin
 # 4369 epmd - for clustering
 # 25672 rabbitmq-server - for clustering
-#EXPOSE 5672 15672 4369 25672
+EXPOSE 5672 15672 4369 25672
 
 #
 # entrypoint/cmd for container
 # we will set a random password and add one vhost for development
-ENV DEVEL_VHOST_NAME develop
-CMD ["/run-rabbitmq-server.sh"]
+#ENV DEVEL_VHOST_NAME develop
+#CMD ["/run-rabbitmq-server.sh"]
 
 ### CHEF
 # install

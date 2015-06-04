@@ -1,0 +1,209 @@
+#!/usr/bin/pypy
+##### chage python to pypy /usr/bin/python
+# -*- coding: utf_8 -*-
+######## made by rayman@rhems-japan.co.jp
+__author__ = "rayman"
+__copyright__ = "Copyright (C) RHEMS Japan Co.,Ltd "
+__version__ = "0.2"
+#######################################################
+
+#from __future__ import with_statement
+import os
+import sys
+import logging
+import time
+import pika
+import socket
+import threading
+import signal
+import time
+import zlib
+import sys
+import shlex
+import re
+import codecs
+import datetime
+import ConfigParser
+import argparse
+
+### para ###
+script_path = os.path.dirname(__file__)
+script_name = os.path.basename(__file__)
+parser = argparse.ArgumentParser(description='Split log file.')
+parser.add_argument('--app',  action='store_true', help='run as a app log split')
+parser.add_argument('-d', '--debug', action='store_true', help='debung mode')
+parser.add_argument('-c', '--config', help='read configfile')
+
+### Setting ###
+reload(sys)
+sys.setdefaultencoding('utf-8')
+config = ConfigParser.SafeConfigParser()
+
+if parser.parse_args().config:
+	base_conf_path=parser.parse_args().config
+else:
+	base_conf_path = script_path + '/../conf/' + script_name + '.conf'
+
+if parser.parse_args().debug:
+	print "---- config file  ---"
+	print base_conf_path
+	print "---- config file  ---"
+
+config.read(base_conf_path)
+
+mq_server=config.get('base', 'mq_server')
+script_log=config.get('base', 'script_log')
+queuename=config.get('base', 'queuename')
+logbase=config.get('base', 'logbase')
+chunkw=config.get('base', 'chunkw')
+
+logging.basicConfig()
+handler = logging.FileHandler(script_log)
+logger = logging.getLogger("app")
+logger.setLevel(logging.WARN)
+logger.addHandler(handler)
+
+funcopt=['log','switch','lb', 'merge']
+
+def FILE_OUTPUT (targetdir,targetfile,datalog):
+	if parser.parse_args().debug:
+		print "---- FILE_OUTPUT ---"
+        	print targetfile
+        	print datalog
+		print "---- FILE_OUTPUT ---"
+        if not os.path.isdir(targetdir):
+                os.makedirs(targetdir)
+        fp = open(targetfile,'a')
+        try:
+                #fp.write(datalog.decode('string_escape'))
+                fp.write(datalog)
+        finally:
+                fp.close()
+
+def outoput_func(outputdate,server,datalog,outputdir,outputfile,optm):
+	if optm == "merge":
+		outputdir=logbase + "/" + outputdir + "/" + outputdate + "/"	
+	else:
+        	outputdir=logbase + "/" + server + "/" + outputdir + "/" + outputdate + "/"
+
+	if parser.parse_args().debug:
+		print "---- FILE_OUTPUT outputdir ---"
+		print optm + " : " +  outputdir 
+		print "---- FILE_OUTPUT outputdir ---"
+
+        outfile=outputfile
+        outputfile=outputdir + outfile
+
+        FILE_OUTPUT(outputdir,outputfile,datalog)
+
+
+def callback(ch, method, properties, body):
+    if parser.parse_args().debug:
+	print "---- callbackdata ---"
+	print body
+	print "---- callbackdata ---"
+    try:
+        data=body.split(" ")
+        outputdate=data[0].split(':')[0].replace('T','')
+	server=re.sub(chunkw,'',data[1].lower())
+	matchflg=False
+
+	if parser.parse_args().app:
+    		if parser.parse_args().debug:
+			print "---- app mode ---"
+
+		nomatchfile='app_notmatch.log'
+
+		#check_outputdir=logbase + "/" + server
+		if re.search('dev',server,re.IGNORECASE):
+			check_outputdir=logbase + "/app_dev/" + outputdate[:-2]
+		elif re.search('stg',server,re.IGNORECASE):
+			check_outputdir=logbase + "/app_stg/" + outputdate[:-2]
+		else:
+			check_outputdir=logbase + "/app/" + outputdate[:-2]
+	
+		if parser.parse_args().debug:
+			print check_outputdir		
+		matchflg=True
+		outputfile=check_outputdir + '/' + data[2].split('[')[0].split(':')[0] + '.log'
+		#outoput_func(outputdate[:-2],server,body,'app',outputfile)
+		FILE_OUTPUT(check_outputdir,outputfile,body)
+	else:
+		nomatchfile='infra_notmatch.log'
+        	tagname=data[2]
+    		if parser.parse_args().debug:
+			print "---- infra mode ---"
+			print tagname
+        	## chekc for options
+		for func in config.sections():
+			try:
+				funcsearch="^" + func
+
+    				if parser.parse_args().debug:
+					print "---- serach  ---"
+					print tagname
+					print funcsearch
+					print "---- search ---"
+			
+				## switch case
+				## for keycdn
+				if re.search('keycdn',server,re.IGNORECASE):
+					tstr=data[0].split('+')[0].replace('T',' ')
+					tdatetime = datetime.datetime.strptime(tstr, '%Y-%m-%d %H:%M:%S')
+					bodyz=str(tdatetime + datetime.timedelta(hours = 7)) + ' '
+					for i in range(1,len(data)):
+						bodyz=bodyz + data[i] + ' '
+					outoput_func(str(tdatetime + datetime.timedelta(hours = 7)).split(' ')[0],server,bodyz,'lockcdn/accesslog','cdn_access.log','merge')
+					break
+				else:
+					if re.search(funcsearch,tagname,re.IGNORECASE):
+						outoput_func(outputdate[:-2],server,body,config.get(func,'dir'),config.get(func,'outputfile'),config.get(func,'opt'))
+						matchflg=True
+    						if parser.parse_args().debug:
+							print "--- match ---"
+							print body
+						break
+
+			except ConfigParser.NoOptionError:
+				print 'no pot'
+		
+	## OTHER
+	if matchflg != True:
+    		if parser.parse_args().debug:
+			print "--- nomatch ---"
+			print body
+		d = datetime.datetime.today()
+		targetdir=logbase + "/OTHER/" + d.strftime("%Y-%m-%d") + "/"
+		targetfile=targetdir + nomatchfile
+		FILE_OUTPUT (targetdir,targetfile,body)
+
+    except IndexError:
+         print "Oops! No @ symbols exist!"
+
+    except ValueError, err:
+        print 'ERROR split'
+
+""" Signal Shutdown """
+def shutdown_handler(n, frame):
+        print "receive signal:", str(n)
+        sys.exit()
+
+def queue_reader():
+        connection_delay = 0
+        time.sleep(connection_delay)
+        try:
+                credentials = pika.PlainCredentials('admin', 'guest')
+                connection = pika.BlockingConnection(pika.ConnectionParameters(host = mq_server ,credentials = credentials ))
+                channel = connection.channel()
+                channel.basic_consume(callback,queue=queuename,no_ack=True)
+                channel.start_consuming()
+        except:
+                connection_delay = connection_delay + 1
+
+def main():
+        signal.signal(signal.SIGINT, shutdown_handler)
+        signal.signal(signal.SIGHUP, shutdown_handler)
+        signal.signal(signal.SIGTERM, shutdown_handler)
+        queue_reader()
+
+main()

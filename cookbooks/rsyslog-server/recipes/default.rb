@@ -58,10 +58,16 @@ end
 
 ######## START RSYSLOG
 ## include
+include_recipe "rsyslog-server::rabbitmqsetup"
 include_recipe "rsyslog-server::libestr"
 include_recipe "rsyslog-server::liblogging"
 include_recipe "rsyslog-server::librelp"
 include_recipe "rsyslog-server::librabbitmq"
 include_recipe "rsyslog-server::rsyslog"
 include_recipe "rsyslog-server::createconf"
-include_recipe "rsyslog-server::initfile"
+case node[:platform_version]
+when "7.1.1503"
+    include_recipe "rsyslog-server::systemctl"
+else
+    include_recipe "rsyslog-server::initfile"
+end

@@ -2,7 +2,7 @@
 default['rsyslog_infra']['facility'] = 'local1'
 default['rsyslog_infra']['virtual_host'] = '/'
 default['rsyslog_infra']['host'] = '127.0.0.1'
-default['rsyslog_infra']['user'] = 'guest'
+default['rsyslog_infra']['user'] = 'admin'
 default['rsyslog_infra']['password'] = 'guest'
 default['rsyslog_infra']['template'] = 'RSYSLOG_FileFormat'
 default['rsyslog_infra']['routing_key'] = 'infra'
