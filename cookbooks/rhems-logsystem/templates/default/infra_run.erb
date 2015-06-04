@@ -3,5 +3,6 @@
 PATH=<%= node.rhems_logsystem.path %>bin:/usr/sbin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/sbin
 export PATH
 
+/root/rabbitmqadmin --username=admin --password=guest declare queue name=infra durable=false
 rabbitmqadmin declare queue name=infra
 exec infra
