@@ -4,7 +4,7 @@ RHEMS LogSystem
   RHEMS LogSystemでは基本インフラ向けのlogを収集する為に開発をしました。
   サーバでsyslogの設定をするだけでクライアントの設定は完了です。
 
-![alt tag](https://github.com/RHEMS-Japan/LogSystem/blob/master/img/rhems_log.jpg?raw=true)
+![alt tag](https://github.com/RHEMS-Japan/LogSystem/blob/master/img/rhems_log_docker.png?raw=true)
 
 
 logの流れ
